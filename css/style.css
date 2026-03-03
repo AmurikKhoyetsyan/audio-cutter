@@ -40,7 +40,6 @@ body {
 
 .waveform {
   width: 100%;
-  height: 50px;
   background-color: #FFFFFF;
 }
 
@@ -130,7 +129,7 @@ body {
           flex-direction: row;
 }
 
-#cut {
+.btn {
   border: none;
   -webkit-box-shadow: none;
           box-shadow: none;
@@ -147,7 +146,7 @@ body {
   transition: all 250ms linear;
 }
 
-#cut:hover, #cut:active, #cut:focus {
+.btn:hover, .btn:active, .btn:focus {
   border: none;
   -webkit-box-shadow: none;
           box-shadow: none;
@@ -155,7 +154,7 @@ body {
   background-color: #191b29;
 }
 
-#cut:hover {
+.btn:hover {
   background-color: #121420;
 }
 /*# sourceMappingURL=style.css.map */

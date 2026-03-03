@@ -4,10 +4,6 @@
  *
  * The MIT License (MIT)
  *
- * When we bring the file closer to the installation area
- * a new class is added to the installation section called "dragover",
- * with which we can shape the installation area․
- *
  ************************************************************************/
 
 ;(function () {
@@ -37,19 +33,25 @@
         endX: null,
         option: {
             waveColor: '#FFAA00',
+            backgroundColor: '#FFFFFF',
             backgroundMask: 'rgba(232,109,109,0.42)',
             callBack: null,
             playAfterCut: false,
             isDownload: false,
             name: 'cut_audio.wav',
-            removeContent: false
+            removeContent: false,
+            ekvalayzer: null,
+            lineWidth: 2,
+            waveOffset: 0.2,
+            width: 460,
+            height: 50,
         }
-    }
+    };
 
     /**
      * @type {{}}
      */
-    AudioCutter.fullData = {}
+    AudioCutter.fullData = {};
 
     /**
      * @param audio
@@ -152,8 +154,9 @@
      */
     AudioCutter.createWavForm = async function () {
         this.fullData.canvas = document.createElement('canvas');
-        this.fullData.canvas.width = this.fullData.parent.clientWidth;
-        this.fullData.canvas.height = this.fullData.parent.clientHeight;
+        this.fullData.canvas.width = this.fullData.option.width;
+        this.fullData.canvas.height = this.fullData.option.height;
+        this.fullData.canvas.style['background-color'] = this.fullData.option.backgroundColor;
         this.fullData.parent.appendChild(this.fullData.canvas);
         this.fullData.ctx = this.fullData.canvas.getContext('2d');
 
@@ -165,12 +168,12 @@
 
         const channelData = this.fullData.bufferAudioData.getChannelData(0);
         const step = Math.ceil(channelData.length / this.fullData.canvas.width);
-        const amp = this.fullData.canvas.height / 2;
+        const amp = this.fullData.canvas.height / 2.2;
 
-        for (let i = 0; i < this.fullData.canvas.width; i++) {
+        for (let i = 0; i < this.fullData.canvas.width; i += this.fullData.option.lineWidth) {
             const min = Math.min.apply(null, channelData.subarray(i * step, (i + 1) * step));
             const max = Math.max.apply(null, channelData.subarray(i * step, (i + 1) * step));
-            this.fullData.ctx.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
+            this.fullData.ctx.fillRect(i, (this.fullData.canvas.height - Math.max(1, (max - min) * amp)) / 2, this.fullData.option.lineWidth - this.fullData.option.waveOffset, Math.max(1, (max - min) * amp));
         }
 
         this.fullData.rect = this.fullData.canvas.getBoundingClientRect();
@@ -385,11 +388,12 @@
      * @param audio
      * @param option
      */
-    AudioCutter.run = function (parent, audio, option = {
+    AudioCutter.run = function (parent = null, audio = null, option = {
         waveColor: null,
         backgroundMask: null,
-        callBack: null
-    }) {
+        callBack: null,
+        ekvalayzer: null
+    }, ekvalayzer = {}) {
 
         this.reset();
 
@@ -403,9 +407,13 @@
             }
         }
 
-        if (parent !== null) {
+        if (parent !== null && audio !== null) {
             this.createWavForm();
-            this.createMask()
+            this.createMask();
+
+            if (this.fullData.option.ekvalayzer !== null) {
+                EkvalayzerGraphic.run(this.fullData.option.ekvalayzer, audio, ekvalayzer);
+            }
         }
     };
 

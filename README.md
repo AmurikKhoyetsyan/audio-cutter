@@ -1,5 +1,7 @@
 ## Audio Cutter
 
+### [Demo](https://amurikkhoyetsyan.github.io/audio-cutter/)
+
 <img src="./img/example.gif" alt="example" width="508" />
 
 
